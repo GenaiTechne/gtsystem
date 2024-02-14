@@ -23,7 +23,9 @@ bedrock.claude_text(prompt)
 
 ## Features and Notebook Samples
 
-![gtsystem features](gtsystem-features.webp)
+You can read more about the vision behind gtsystem on the [GenAI Techne substack post](https://genaitechne.substack.com/p/excelling-in-the-craft-of-generative).
+
+[![gtsystem features](gtsystem-features.webp)](https://genaitechne.substack.com/p/excelling-in-the-craft-of-generative)
 
 You can learn `gtsystem` API by following along the notebook samples included in this repo.
 
