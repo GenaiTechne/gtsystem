@@ -1,0 +1,19 @@
+# Python
+pandas
+markdown
+openpyxl
+
+# Jupyter
+jupyterlab
+ipywidgets
+
+# AWS
+boto3
+awscli
+botocore
+
+# OpenAI
+openai
+
+# Package
+build
