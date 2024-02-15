@@ -3,6 +3,8 @@
 
 GenAI Techne is on a mission to help enterprise and professionals excel in the craft of Generative AI. Check out the [GenAI Techne Substack](https://genaitechne.substack.com/) where you can read more about our mission, read gtsystem documentation, learn from step-by-step tutorials, and influence the roadmap of gtsystem for your use cases.
 
+[![](https://raw.githubusercontent.com/GenaiTechne/gtsystem/main/gtsystem.jpeg)](https://genaitechne.substack.com/)
+
 ## Getting Started
 
 The get started using `gtsystem` package follow these steps.
@@ -23,7 +25,10 @@ bedrock.claude_text(prompt)
 
 The `gtsystem` package source is available [repository on GitHub](https://github.com/GenaiTechne/gtsystem).
 
+
 You can read more about the vision behind gtsystem on the [GenAI Techne substack post](https://genaitechne.substack.com/p/excelling-in-the-craft-of-generative).
+
+[![](https://raw.githubusercontent.com/GenaiTechne/gtsystem/main/gtsystem-features.jpg)](https://genaitechne.substack.com/p/excelling-in-the-craft-of-generative)
 
 You can learn `gtsystem` API by following along the [notebook samples](https://github.com/GenaiTechne/gtsystem/tree/main/notebooks) included in the `gtsystem` repo.
 
