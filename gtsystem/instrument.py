@@ -18,15 +18,15 @@ class Instrument:
                 end_time = time.time()
                 duration = round(end_time - start_time, 2)
                 size_in_bytes = sys.getsizeof(result)
-
-                if func.__name__ not in self.stats:
-                    self.stats[func.__name__] = {'calls': 1, 'total_time': duration, 
+                module_func = func.__module__ + '.' + func.__name__
+                if module_func not in self.stats:
+                    self.stats[module_func] = {'calls': 1, 'total_time': duration, 
                                                 'total_return_size': size_in_bytes}
                 else:
-                    self.stats[func.__name__]['calls'] += 1
-                    self.stats[func.__name__]['total_time'] += duration
-                    self.stats[func.__name__]['total_time'] = round(self.stats[func.__name__]['total_time'], 2)
-                    self.stats[func.__name__]['total_return_size'] += size_in_bytes
+                    self.stats[module_func]['calls'] += 1
+                    self.stats[module_func]['total_time'] += duration
+                    self.stats[module_func]['total_time'] = round(self.stats[module_func]['total_time'], 2)
+                    self.stats[module_func]['total_return_size'] += size_in_bytes
             else:
                 result = func(*args, **kwargs)
 

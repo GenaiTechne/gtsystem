@@ -1,8 +1,12 @@
 import pandas as pd
-from IPython.display import display, Markdown
+from IPython.display import display, Markdown, Image
+from IPython.core.display import HTML
 
 def md(text):
     display(Markdown(text))
+
+def img(url):
+    return Image(url=url)
 
 def df(df):
     # Set display options for max column width

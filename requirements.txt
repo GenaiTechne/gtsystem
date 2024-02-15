@@ -1,20 +1,24 @@
-# Python
+# Python capabilities
 pandas
 markdown
 openpyxl
 
-# Jupyter
+# Jupyter notebook
 jupyterlab
 ipywidgets
 
-# AWS
+# AWS for Bedrock managed models
 boto3
 awscli
 botocore
 
-# OpenAI
+# OpenAI for GPT models
 openai
 
+# Ollama for LLMs running on your laptop
+ollama
+
+# === Ignore this after `pip install gtsystem` ===
 # Package
 build
 twine
