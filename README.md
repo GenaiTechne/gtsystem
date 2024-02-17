@@ -14,55 +14,63 @@ The get started using `gtsystem` package follow these steps.
 **Step 2.** Open a Jupyter notebook and try this sample.
 
 ```python
-from gtsystem import openai, bedrock
+from gtsystem import openai, bedrock, ollama
 prompt = 'How many faces does a tetrahedron have?'
 openai.gpt_text(prompt)
 bedrock.llama_text(prompt)
 bedrock.claude_text(prompt)
+ollama.mistral_text(prompt)
 ```
 
 ## Features and Notebook Samples
 
-The `gtsystem` package source is available [repository on GitHub](https://github.com/GenaiTechne/gtsystem).
-
+The `gtsystem` package source is available in the [repository on GitHub](https://github.com/GenaiTechne/gtsystem).
 
 You can read more about the vision behind gtsystem on the [GenAI Techne substack post](https://genaitechne.substack.com/p/excelling-in-the-craft-of-generative).
 
 [![](https://raw.githubusercontent.com/GenaiTechne/gtsystem/main/gtsystem-features.jpg)](https://genaitechne.substack.com/p/excelling-in-the-craft-of-generative)
 
-You can learn `gtsystem` API by following along the [notebook samples](https://github.com/GenaiTechne/gtsystem/tree/main/notebooks) included in the `gtsystem` repo.
+You can learn `gtsystem` API by following along the [notebook samples](https://github.com/GenaiTechne/gtsystem/tree/main/notebooks) included in the `gtsystem` repo. This samples are documented on the [GenAI Techne Substack](https://genaitechne.substack.com/).
 
-`01-evaluate.ipynb` for single statement prompt evaluations across multiple models including OpenAI GPT-4 and Bedrock hosted Claude 2.1 and Llama 2.
+1. **Evaluate models using one line of code** Refer `01-evaluate.ipynb` for single statement prompt evaluations across multiple models including OpenAI GPT-4 and Bedrock hosted Claude 2.1 and Llama 2.
 
-`02-render.ipynb` for well formatted rendering of the model responses.
+2. **Render LLM responses** Use `02-render.ipynb` for well formatted rendering of the model responses.
 
-`03-tasks.ipynb` for loading evaluation tasks - find, list, load prompts by task, including optinal parameter values for temperature and TopP.
+3. **Load evaluation tasks from Excel** Try `03-tasks.ipynb` for loading evaluation tasks - find, list, load prompts by task, including optinal parameter values for temperature and TopP.
 
-`04-instrument.ipynb` for instrumenting and comparing multiple models across latency and size of response.
+4. **Instrument speed and size (cost) of response** Reuse `04-instrument.ipynb` for instrumenting and comparing multiple models across latency and size of response.
 
-`05-benchmark.ipynb` for automating benchmarking the quality of responses from models like Llama and Claude using GPT-4 as an LLM evaluator.
+4. **Benchmark quality of response** Use `05-benchmark.ipynb` for benchmarking the quality of responses from models like Llama and Claude using GPT-4 as an LLM evaluator.
+
+5. **Run models on your laptop** Get `06-ollama.ipynb` to run models like Mistral and Llama locally on your laptop and compare with models hosted on Cloud.
 
 ## Installing Dependencies
 
 You can install following dependencies to work with `gtsystem` based on your needs. Start with our `requirements.txt` or create your own. Then run `pip install -r requirements.txt` within your environment.
 
 ```
-# Python
+# GenAI Techne System
+gtsystem
+
+# Python capabilities
 pandas
 markdown
 openpyxl
 
-# Jupyter Notebooks
+# Jupyter notebook
 jupyterlab
 ipywidgets
 
-# Amazon Bedrock / AWS
+# AWS for Bedrock managed models
 boto3
 awscli
 botocore
 
-# OpenAI / GPT
+# OpenAI for GPT models
 openai
+
+# Ollama for LLMs running on your laptop
+ollama
 ```
 
 ## Amazon Bedrock Setup
@@ -81,8 +89,8 @@ To use Ollama provided LLMs locally on your laptop follow these steps.
 **Step 1.** Download [Ollama](https://ollama.com/)
 *Note the memory requirements for each model. 7b models generally require at least 8GB of RAM. 13b models generally require at least 16GB of RAM. 70b models generally require at least 64GB of RAM*
 
-**Step 2.** Find model Ollama [library](https://ollama.com/library) > Run command in terminal to download and run model.
-*Currently gtsystem supports popular models like llama2, mistral, and phi.*
+**Step 2.** Find model Ollama [library](https://ollama.com/library) > Run command `ollama pull <model>` in terminal to download the model.
+*Currently gtsystem supports popular models like llama2, mistral, and llava.*
 
 ## OpenAI Setup
 

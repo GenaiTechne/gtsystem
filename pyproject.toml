@@ -1,6 +1,6 @@
 [project]
 name = "gtsystem"
-version = "0.0.4"
+version = "0.0.6"
 authors = [
   { name="GenAI Techne", email="team@genaitechne.com" },
 ]
