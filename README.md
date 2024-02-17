@@ -24,7 +24,7 @@ ollama.mistral_text(prompt)
 
 ## Features and Notebook Samples
 
-The `gtsystem` package source is available in the [repository on GitHub](https://github.com/GenaiTechne/gtsystem).
+The `gtsystem` package source is available in this [repository on GitHub](https://github.com/GenaiTechne/gtsystem).
 
 You can read more about the vision behind gtsystem on the [GenAI Techne substack post](https://genaitechne.substack.com/p/excelling-in-the-craft-of-generative).
 
@@ -32,17 +32,17 @@ You can read more about the vision behind gtsystem on the [GenAI Techne substack
 
 You can learn `gtsystem` API by following along the [notebook samples](https://github.com/GenaiTechne/gtsystem/tree/main/notebooks) included in the `gtsystem` repo. This samples are documented on the [GenAI Techne Substack](https://genaitechne.substack.com/).
 
-1. **Evaluate models using one line of code** Refer `01-evaluate.ipynb` for single statement prompt evaluations across multiple models including OpenAI GPT-4 and Bedrock hosted Claude 2.1 and Llama 2.
+1. **Evaluate models using one line of code:** Refer `01-evaluate.ipynb` for single statement prompt evaluations across multiple models including OpenAI GPT, Bedrock hosted Claude or Llama.
 
-2. **Render LLM responses** Use `02-render.ipynb` for well formatted rendering of the model responses.
+2. **Render LLM responses:** Use `02-render.ipynb` for well formatted rendering of the model responses including markdown tables.
 
-3. **Load evaluation tasks from Excel** Try `03-tasks.ipynb` for loading evaluation tasks - find, list, load prompts by task, including optinal parameter values for temperature and TopP.
+3. **Load evaluation tasks from Excel:** Try `03-tasks.ipynb` for automating evaluation tasks - find, list, load prompts by task, including optimal parameter values for temperature and TopP.
 
-4. **Instrument speed and size (cost) of response** Reuse `04-instrument.ipynb` for instrumenting and comparing multiple models across latency and size of response.
+4. **Instrument speed and size (cost) of response:** Reuse `04-instrument.ipynb` for instrumenting and comparing multiple models across latency and size of response.
 
-4. **Benchmark quality of response** Use `05-benchmark.ipynb` for benchmarking the quality of responses from models like Llama and Claude using GPT-4 as an LLM evaluator.
+4. **Benchmark quality of response:** Use `05-benchmark.ipynb` for automated benchmarking quality of responses from models like Llama and Claude using GPT-4 as an LLM evaluator.
 
-5. **Run models on your laptop** Get `06-ollama.ipynb` to run models like Mistral and Llama locally on your laptop and compare with models hosted on Cloud.
+5. **Run models on your laptop:** Get `06-ollama.ipynb` to run models like Mistral, Llama, and Llava locally on your laptop and compare models hosted on Cloud or proprietary model APIs.
 
 ## Installing Dependencies
 
