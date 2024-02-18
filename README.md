@@ -42,7 +42,7 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 4. **Benchmark quality of response:** Use `05-benchmark.ipynb` for automated benchmarking quality of responses from models like Llama and Claude using GPT-4 as an LLM evaluator.
 
-5. **Run models on your laptop:** Get `06-ollama.ipynb` to run models like Mistral, Llama, and Llava locally on your laptop and compare models hosted on Cloud or proprietary model APIs.
+5. **Run models on your laptop:** Get `06-ollama.ipynb` to run models like Mistral, Llama, and CodeLlama locally on your laptop and compare models hosted on Cloud or proprietary model APIs.
 
 ## Installing Dependencies
 
