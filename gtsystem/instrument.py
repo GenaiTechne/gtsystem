@@ -48,4 +48,4 @@ class Instrument:
     def get_stats(self):
         return self.stats
 
-instrument = Instrument()
+metrics = Instrument()

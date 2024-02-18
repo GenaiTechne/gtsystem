@@ -6,7 +6,7 @@ import os
 import boto3
 from botocore.config import Config
 
-from .instrument import instrument
+from .instrument import metrics
 
 LLAMA_ACCURACY = 0
 CLAUDE_ACCURACY = 0
@@ -80,7 +80,7 @@ def list_models(vendor):
     listModels = BEDROCK.list_foundation_models(byProvider=vendor)
     print("\n".join(list(map(lambda x: f"{x['modelName']} : { x['modelId'] }", listModels['modelSummaries']))))
 
-@instrument.track
+@metrics.track
 def claude_text(system='', prompt='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-v2:1'):
 
     decorated_prompt = f'Human: {(system + " " + prompt).strip()}\n\nAssistant:\n'
@@ -115,7 +115,7 @@ def claude_text(system='', prompt='', temperature=0.0, topP=1.0, tokens=512, mod
         else:
             raise error
 
-@instrument.track        
+@metrics.track        
 def llama_text(system='', prompt='', temperature=0.0, topP=1.0, tokens=512, model='meta.llama2-70b-chat-v1'):
 
     if system != '':
