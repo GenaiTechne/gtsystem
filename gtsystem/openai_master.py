@@ -5,7 +5,7 @@ def init():
     global OPENAI
     OPENAI = OpenAI()
 
-def gpt_master(prompt, system='', temperature=0.0, topP=1, tokens=64, model="gpt-4-0125-preview"):
+def gpt_master(prompt, system='', temperature=0.0, topP=1, tokens=64, model="gpt-3.5-turbo"):
     if OPENAI is None:
         init()
 

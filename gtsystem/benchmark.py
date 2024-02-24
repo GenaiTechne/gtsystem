@@ -12,6 +12,7 @@ def accuracy(prompt, system='', result=''):
     System: {system} 
     User: {prompt}
     Response: {result}"""
-
-    accuracy = gpt_master(prompt=openai_prompt, system=openai_system)
+    
+    # GPT3.5 does not work here
+    accuracy = gpt_master(prompt=openai_prompt, system=openai_system, model="gpt-4-0125-preview")
     return accuracy
