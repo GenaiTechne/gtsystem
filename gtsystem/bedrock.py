@@ -81,7 +81,7 @@ def list_models(vendor):
     print("\n".join(list(map(lambda x: f"{x['modelName']} : { x['modelId'] }", listModels['modelSummaries']))))
 
 @metrics.track
-def claude_text(system='', prompt='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-v2:1'):
+def claude_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-v2:1'):
 
     decorated_prompt = f'Human: {(system + " " + prompt).strip()}\n\nAssistant:\n'
     body = json.dumps({"prompt": decorated_prompt, 
@@ -116,7 +116,7 @@ def claude_text(system='', prompt='', temperature=0.0, topP=1.0, tokens=512, mod
             raise error
 
 @metrics.track        
-def llama_text(system='', prompt='', temperature=0.0, topP=1.0, tokens=512, model='meta.llama2-70b-chat-v1'):
+def llama_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='meta.llama2-70b-chat-v1'):
 
     if system != '':
         decorated_prompt = f'<<SYS>>{system}<</SYS>>\n[INST]User:{prompt}[/INST]\nAssistant:'
@@ -157,3 +157,11 @@ def llama_text(system='', prompt='', temperature=0.0, topP=1.0, tokens=512, mode
         else:
             raise error
 
+def text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='llama2'):
+    match model:
+        case 'claude':
+            return claude_text(prompt, system, temperature, topP, model='anthropic.claude-v2:1')
+        case 'llama2':
+            return llama_text(prompt, system, temperature, topP, model='meta.llama2-70b-chat-v1')
+        case _:
+            return 'Please specify a valid model name'

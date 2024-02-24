@@ -11,6 +11,7 @@ def img(url):
 def df(df):
     # Set display options for max column width
     pd.set_option('display.max_colwidth', None)
+    pd.set_option('display.precision', 2)
 
     # Define CSS to hide the index and apply other styles
     styles = [

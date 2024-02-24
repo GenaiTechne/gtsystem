@@ -6,7 +6,7 @@ def get(task = ''):
     prompt = TASKS[TASKS['Task'] == task]['Prompt'].values[0]
     temperature = float(TASKS[TASKS['Task'] == task]['Temperature'].values[0])
     topP = float(TASKS[TASKS['Task'] == task]['TopP'].values[0])
-    return system, prompt, temperature, topP
+    return prompt, system, temperature, topP
 
 def list(start=1, end=5):
     return TASKS.iloc[start:end]
