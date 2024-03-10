@@ -49,9 +49,6 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 You can install following dependencies to work with `gtsystem` based on your needs. Start with our `requirements.txt` or create your own. Then run `pip install -r requirements.txt` within your environment.
 
 ```
-# GenAI Techne System
-gtsystem
-
 # Python capabilities
 pandas
 markdown
@@ -71,6 +68,12 @@ openai
 
 # Ollama for LLMs running on your laptop
 ollama
+
+# Neo4j for Graph database
+neo4j
+
+# Groq for open models on fast Groq LPUs
+groq
 ```
 
 ## Amazon Bedrock Setup
@@ -99,6 +102,15 @@ To use OpenAI models follow these steps.
 **Step 1.** Signup for [OpenAI API](https://openai.com/blog/openai-api) access and get the API key.
 
 **Step 2.** Add OpenAI API Key to your `~/.zshrc` or `~/.bashrc` using `export OPENAI_API_KEY="your-key-here"`
+
+## Groq Setup
+
+To use open models on fast Groq LPUs follow these steps.
+
+**Step 1.** Signup for [Groq API](https://console.groq.com/) access and get the API key.
+
+**Step 2.** Add Groq API Key to your `~/.zshrc` or `~/.bashrc` using `export GROQ_API_KEY="your-key-here"`
+
 
 ## Basic Python Environment
 

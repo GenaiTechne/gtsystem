@@ -1,6 +1,5 @@
 import json
 import botocore
-import time
 import os
 
 import boto3

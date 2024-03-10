@@ -18,10 +18,10 @@ openai
 # Ollama for LLMs running on your laptop
 ollama
 
-# Neo4j
+# Neo4j for Graph database
 neo4j
 
-# Groq
+# Groq for open models on fast Groq LPUs
 groq
 
 # === Ignore this after `pip install gtsystem` ===
