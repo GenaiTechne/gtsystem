@@ -18,6 +18,12 @@ openai
 # Ollama for LLMs running on your laptop
 ollama
 
+# Neo4j
+neo4j
+
+# Groq
+groq
+
 # === Ignore this after `pip install gtsystem` ===
 # Package
 build
