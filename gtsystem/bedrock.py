@@ -1,14 +1,13 @@
 import json
+from venv import logger
 import botocore
 import os
 
 import boto3
 from botocore.config import Config
+from botocore.exceptions import ClientError
 
 from .instrument import metrics
-
-LLAMA_ACCURACY = 0
-CLAUDE_ACCURACY = 0
 
 BEDROCK_RUNTIME = None
 BEDROCK = None
@@ -80,7 +79,45 @@ def list_models(vendor):
     print("\n".join(list(map(lambda x: f"{x['modelName']} : { x['modelId'] }", listModels['modelSummaries']))))
 
 @metrics.track
-def claude_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-v2:1'):
+def claude3_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-3-sonnet-20240229-v1:0'):
+    try:
+        if BEDROCK_RUNTIME is None:
+            init_runtime()
+
+        response = BEDROCK_RUNTIME.invoke_model(
+            modelId=model,
+            body=json.dumps(
+                {
+                    "anthropic_version": "bedrock-2023-05-31",
+                    "system": system,
+                    "max_tokens": 1024,
+                    "temperature": temperature,
+                    "top_p": topP,
+                    "max_tokens": tokens,
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": [{"type": "text", "text": prompt}],
+                        }
+                    ],
+                }
+            ),
+        )
+
+        result = json.loads(response.get('body').read())
+        return result['content'][0]['text']
+
+    except ClientError as err:
+        logger.error(
+            "Couldn't invoke Claude 3. Here's why: %s: %s",
+            err.response["Error"]["Code"],
+            err.response["Error"]["Message"],
+        )
+        raise
+
+
+@metrics.track
+def claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-v2:1'):
 
     decorated_prompt = f'Human: {(system + " " + prompt).strip()}\n\nAssistant:\n'
     body = json.dumps({"prompt": decorated_prompt, 
@@ -115,7 +152,7 @@ def claude_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model=
             raise error
 
 @metrics.track        
-def llama_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='meta.llama2-70b-chat-v1'):
+def llama2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='meta.llama2-70b-chat-v1'):
 
     if system != '':
         decorated_prompt = f'<<SYS>>{system}<</SYS>>\n[INST]User:{prompt}[/INST]\nAssistant:'
@@ -158,9 +195,11 @@ def llama_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='
 
 def text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='llama2'):
     match model:
-        case 'claude':
-            return claude_text(prompt, system, temperature, topP, model='anthropic.claude-v2:1')
+        case 'claude3':
+            return claude3_text(prompt, system, temperature, topP)
+        case 'claude2':
+            return claude2_text(prompt, system, temperature, topP)
         case 'llama2':
-            return llama_text(prompt, system, temperature, topP, model='meta.llama2-70b-chat-v1')
+            return llama2_text(prompt, system, temperature, topP)
         case _:
             return 'Please specify a valid model name'

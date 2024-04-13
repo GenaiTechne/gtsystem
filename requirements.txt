@@ -28,3 +28,4 @@ groq
 # Package
 build
 twine
+pkginfo
