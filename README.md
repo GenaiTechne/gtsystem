@@ -32,6 +32,8 @@ You can read more about the vision behind gtsystem on the [GenAI Techne substack
 
 You can learn `gtsystem` API by following along the [notebook samples](https://github.com/GenaiTechne/gtsystem/tree/main/notebooks) included in the `gtsystem` repo. This samples are documented on the [GenAI Techne Substack](https://genaitechne.substack.com/).
 
+0. **Review model leaderboard:** Use `00-leaderboard.ipynb` for reviewing model leaderboard, filter by ranking, vendors, models to decide which one to explore.
+
 1. **Evaluate models using one line of code:** Refer `01-evaluate.ipynb` for single statement prompt evaluations across multiple models including OpenAI GPT, Bedrock hosted Claude or Llama.
 
 2. **Render LLM responses:** Use `02-render.ipynb` for well formatted rendering of the model responses including markdown tables.
@@ -40,9 +42,18 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 4. **Instrument speed and size (cost) of response:** Reuse `04-instrument.ipynb` for instrumenting and comparing multiple models across latency and size of response.
 
-4. **Benchmark quality of response:** Use `05-benchmark.ipynb` for automated benchmarking quality of responses from models like Llama and Claude using GPT-4 as an LLM evaluator.
+5. **Benchmark quality of response:** Use `05-benchmark.ipynb` for automated benchmarking quality of responses from models like Llama and Claude using GPT-4 as an LLM evaluator.
 
-5. **Run models on your laptop:** Get `06-ollama.ipynb` to run models like Mistral, Llama, and CodeLlama locally on your laptop and compare models hosted on Cloud or proprietary model APIs.
+6. **Run models on your laptop:** Get `06-ollama.ipynb` to run models like Mistral, Llama, and CodeLlama locally on your laptop and compare models hosted on Cloud or proprietary model APIs.
+
+7. **Low code sample:** Check out simple `07-low-code-sample.ipynb` to appreciate how much can be done with just simple GTSystem APIs.
+
+8. **Go from prototype to production:** Start with `08-prototype-to-production.ipynb` to go from prototyping using best models, then exploring local models on laptop, finally comparing fastest vendors like Groq in one seamless workflow.
+
+9. **Visual chat on Bedrock:** Explore `09-chat-bedrock.ipynb` for visual chat using Bedrock hosted models.
+
+10. **Visual chat on Anthropic:** Explore `10-chat-anthropic.ipynb` for visual chat using Anthropic hosted models.
+
 
 ## Installing Dependencies
 
