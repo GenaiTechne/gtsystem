@@ -14,11 +14,11 @@ The get started using `gtsystem` package follow these steps.
 **Step 2.** Open a Jupyter notebook and try this sample.
 
 ```python
-from gtsystem import openai, bedrock, ollama
+from gtsystem import openai, bedrock, anthropic, ollama
 prompt = 'How many faces does a tetrahedron have?'
-openai.gpt_text(prompt)
-bedrock.llama_text(prompt)
-bedrock.claude_text(prompt)
+openai.text(prompt)
+bedrock.text(prompt)
+anthropic.text(prompt)
 ollama.mistral_text(prompt)
 ```
 
@@ -76,6 +76,9 @@ botocore
 
 # OpenAI for GPT models
 openai
+
+# Anthropic models
+anthropic
 
 # Ollama for LLMs running on your laptop
 ollama
