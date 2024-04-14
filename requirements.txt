@@ -15,11 +15,11 @@ botocore
 # OpenAI for GPT models
 openai
 
+# Anthropic models
+anthropic
+
 # Ollama for LLMs running on your laptop
 ollama
-
-# Neo4j for Graph database
-neo4j
 
 # Groq for open models on fast Groq LPUs
 groq

@@ -1,4 +1,4 @@
-from .bedrock import claude3_text
+from .bedrock import sonnet_text
 
 def accuracy(prompt, system='', result=''):
     system = """You are evaluating the accuracy of an LLM response. 
@@ -13,5 +13,5 @@ def accuracy(prompt, system='', result=''):
     User: {prompt}
     Response: {result}"""
     
-    accuracy = claude3_text(prompt=prompt, system=system)
+    accuracy = sonnet_text(prompt=prompt, system=system)
     return accuracy

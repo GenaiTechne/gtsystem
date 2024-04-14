@@ -41,12 +41,12 @@ def gemma_text(prompt, system='', temperature=0.0, topP=1.0, model='gemma'):
 def text(prompt, system='', temperature=0.0, topP=1.0, model='gemma'):
     match model:
         case 'gemma':
-            return gemma_text(prompt, system, temperature, topP, model)
+            return gemma_text(prompt, system, temperature, topP)
         case 'llama2':
-            return llama_text(prompt, system, temperature, topP, model)
+            return llama_text(prompt, system, temperature, topP)
         case 'codellama':
-            return codellama_text(prompt, system, temperature, topP, model)
+            return codellama_text(prompt, system, temperature, topP)
         case 'mistral':
-            return mistral_text(prompt, system, temperature, topP, model)
+            return mistral_text(prompt, system, temperature, topP)
         case _:
             return 'Please specify a valid model name'

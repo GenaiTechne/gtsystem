@@ -69,9 +69,6 @@ openai
 # Ollama for LLMs running on your laptop
 ollama
 
-# Neo4j for Graph database
-neo4j
-
 # Groq for open models on fast Groq LPUs
 groq
 ```

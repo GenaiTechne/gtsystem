@@ -1,6 +1,5 @@
 import json
 from venv import logger
-import botocore
 import os
 
 import boto3
@@ -8,11 +7,12 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 
 from .instrument import metrics
+from .chat import ClaudeChat
 
 BEDROCK_RUNTIME = None
 BEDROCK = None
 
-def get_client(assumed_role=None, region=None, runtime=True):
+def _get_client(assumed_role=None, region=None, runtime=True):
     if region is None:
         target_region = os.environ.get("AWS_REGION", os.environ.get("AWS_DEFAULT_REGION"))
     else:
@@ -57,16 +57,16 @@ def get_client(assumed_role=None, region=None, runtime=True):
 
     return bedrock_client
 
-def init_runtime():
+def _init_runtime():
     global BEDROCK_RUNTIME
-    BEDROCK_RUNTIME = get_client(
+    BEDROCK_RUNTIME = _get_client(
         assumed_role=os.environ.get("BEDROCK_ASSUME_ROLE", None),
         region=os.environ.get("AWS_DEFAULT_REGION", None)
     )
 
-def init():
+def _init():
     global BEDROCK
-    BEDROCK = get_client(
+    BEDROCK = _get_client(
         assumed_role=os.environ.get("BEDROCK_ASSUME_ROLE", None),
         region=os.environ.get("AWS_DEFAULT_REGION", None),
         runtime=False
@@ -74,15 +74,75 @@ def init():
 
 def list_models(vendor):
     if BEDROCK is None:
-        init()
+        _init()
     listModels = BEDROCK.list_foundation_models(byProvider=vendor)
     print("\n".join(list(map(lambda x: f"{x['modelName']} : { x['modelId'] }", listModels['modelSummaries']))))
 
-@metrics.track
-def claude3_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-3-sonnet-20240229-v1:0'):
+CHAT_CONTEXT = ClaudeChat()
+
+def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model="", image_url="", reset=False):
+    if reset:
+        CHAT_CONTEXT.reset_context()
+    
+    if system != "":
+        CHAT_CONTEXT.set_system(system)
+    
+    if image_url != "":
+        CHAT_CONTEXT.add_image_message(image_url=image_url, prompt=prompt)
+    else:
+        CHAT_CONTEXT.add_message("user", prompt)
+
     try:
         if BEDROCK_RUNTIME is None:
-            init_runtime()
+            _init_runtime()
+
+        response = BEDROCK_RUNTIME.invoke_model(
+            modelId=model,
+            body=json.dumps(
+                {
+                    "anthropic_version": "bedrock-2023-05-31",
+                    "system": CHAT_CONTEXT.get_system(),
+                    "max_tokens": tokens,
+                    "temperature": temperature,
+                    "top_p": topP,
+                    "max_tokens": tokens,
+                    "messages": CHAT_CONTEXT.get_messages(),
+                }
+            ),
+        )
+
+        result = json.loads(response.get('body').read())
+        CHAT_CONTEXT.add_message("assistant", result['content'][0]['text'])
+
+        return result['content'][0]['text']
+
+    except ClientError as err:
+        logger.error(
+            "Couldn't invoke Claude 3. Here's why: %s: %s",
+            err.response["Error"]["Code"],
+            err.response["Error"]["Message"],
+        )
+        raise
+
+
+@metrics.track
+def sonnet_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", reset=False):
+    return _claude3_chat(prompt, system=system, 
+                         temperature=temperature, topP=topP, tokens=tokens, 
+                         model='anthropic.claude-3-sonnet-20240229-v1:0', 
+                         image_url=image_url, reset=reset)
+
+@metrics.track
+def haiku_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", reset=False):
+    return _claude3_chat(prompt, system=system, 
+                         temperature=temperature, topP=topP, tokens=tokens, 
+                         model='anthropic.claude-3-haiku-20240307-v1:0', 
+                         image_url=image_url, reset=reset)
+
+def _claude3_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model=''):
+    try:
+        if BEDROCK_RUNTIME is None:
+            _init_runtime()
 
         response = BEDROCK_RUNTIME.invoke_model(
             modelId=model,
@@ -90,7 +150,6 @@ def claude3_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model
                 {
                     "anthropic_version": "bedrock-2023-05-31",
                     "system": system,
-                    "max_tokens": 1024,
                     "temperature": temperature,
                     "top_p": topP,
                     "max_tokens": tokens,
@@ -115,9 +174,19 @@ def claude3_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model
         )
         raise
 
+@metrics.track
+def sonnet_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):
+    return _claude3_text(prompt, system=system, 
+                         temperature=temperature, topP=topP, tokens=tokens, 
+                         model='anthropic.claude-3-sonnet-20240229-v1:0')
 
 @metrics.track
-def claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-v2:1'):
+def haiku_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):
+    return _claude3_text(prompt, system=system, 
+                         temperature=temperature, topP=topP, tokens=tokens, 
+                         model='anthropic.claude-3-haiku-20240307-v1:0')
+
+def _claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model=''):
 
     decorated_prompt = f'Human: {(system + " " + prompt).strip()}\n\nAssistant:\n'
     body = json.dumps({"prompt": decorated_prompt, 
@@ -130,7 +199,7 @@ def claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model
     
     try:
         if BEDROCK_RUNTIME is None:
-            init_runtime()
+            _init_runtime()
 
         response = BEDROCK_RUNTIME.invoke_model(
             body=body, modelId=modelId, accept=accept, contentType=contentType
@@ -140,7 +209,7 @@ def claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model
     
         return response_text
     
-    except botocore.exceptions.ClientError as error:
+    except ClientError as error:
     
         if error.response['Error']['Code'] == 'AccessDeniedException':
                print(f"\x1b[41m{error.response['Error']['Message']}\
@@ -150,6 +219,14 @@ def claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model
     
         else:
             raise error
+
+@metrics.track        
+def claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):
+    return _claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-v2:1')
+
+@metrics.track        
+def instant_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):
+    return _claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-instant-v1')
 
 @metrics.track        
 def llama2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='meta.llama2-70b-chat-v1'):
@@ -172,7 +249,7 @@ def llama2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model=
     
     try:
         if BEDROCK_RUNTIME is None:
-            init_runtime()
+            _init_runtime()
 
         response = BEDROCK_RUNTIME.invoke_model(
             body=body, modelId=modelId, accept=accept, contentType=contentType
@@ -182,7 +259,7 @@ def llama2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model=
     
         return response_text
     
-    except botocore.exceptions.ClientError as error:
+    except ClientError as error:
     
         if error.response['Error']['Code'] == 'AccessDeniedException':
                print(f"\x1b[41m{error.response['Error']['Message']}\
@@ -193,13 +270,17 @@ def llama2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model=
         else:
             raise error
 
-def text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='llama2'):
+def text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='sonnet'):
     match model:
-        case 'claude3':
-            return claude3_text(prompt, system, temperature, topP)
+        case 'sonnet':
+            return sonnet_text(prompt, system, temperature, topP, tokens)
+        case 'haiku':
+            return haiku_text(prompt, system, temperature, topP, tokens)
         case 'claude2':
-            return claude2_text(prompt, system, temperature, topP)
+            return claude2_text(prompt, system, temperature, topP, tokens)
+        case 'instant':
+            return instant_text(prompt, system, temperature, topP, tokens)
         case 'llama2':
-            return llama2_text(prompt, system, temperature, topP)
+            return llama2_text(prompt, system, temperature, topP, tokens)
         case _:
             return 'Please specify a valid model name'
