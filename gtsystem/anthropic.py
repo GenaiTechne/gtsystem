@@ -26,7 +26,7 @@ def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model
         CHAT_CONTEXT.set_system(system)
     
     if image_url != "":
-        CHAT_CONTEXT.add_image_message(image_url=image_url, prompt=prompt)
+        CHAT_CONTEXT.add_image_message(prompt=prompt, image_url=image_url)
     else:
         CHAT_CONTEXT.add_message("user", prompt)
 

@@ -14,13 +14,16 @@ The get started using `gtsystem` package follow these steps.
 **Step 2.** Open a Jupyter notebook and try this sample.
 
 ```python
-from gtsystem import openai, bedrock, anthropic, ollama
+from gtsystem import openai, bedrock, anthropic, ollama, instrument
 prompt = 'How many faces does a tetrahedron have?'
 openai.text(prompt)
 bedrock.text(prompt)
 anthropic.text(prompt)
 ollama.mistral_text(prompt)
+instrument.metrics.stats()
 ```
+
+Note: To install the dependencies and setup each of the vendor APIs you can continue reading [here](https://github.com/GenaiTechne/gtsystem?tab=readme-ov-file#installing-dependencies).
 
 ## Features and Notebook Samples
 
@@ -54,6 +57,16 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 10. **Visual chat on Anthropic:** Explore `10-chat-anthropic.ipynb` for visual chat using Anthropic hosted models.
 
+## What's New
+
+### 2024-04-15 (Release 0.1.2)
+
+- Multimodal Chat using OpenAI.
+
+### 2024-04-14 (Release 0.1.1)
+
+- Multimodal Chat using Anthropic/Claude.
+- Multimodal Chat using Bedrock/Claude.
 
 ## Installing Dependencies
 
