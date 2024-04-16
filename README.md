@@ -57,6 +57,8 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 10. **Visual chat on Anthropic:** Explore `10-chat-anthropic.ipynb` for visual chat using Anthropic hosted models.
 
+11. **Visual chat on OpenAI:** Explore `11-chat-openai.ipynb` for visual chat using OpenAI GPT4-Turbo.
+
 ## What's New
 
 ### 2024-04-15 (Release 0.1.2)
@@ -67,6 +69,7 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 - Multimodal Chat using Anthropic/Claude.
 - Multimodal Chat using Bedrock/Claude.
+- LMSYS Leaderboard lite integration.
 
 ## Installing Dependencies
 
