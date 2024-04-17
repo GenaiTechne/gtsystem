@@ -78,19 +78,19 @@ def list_models(vendor):
     listModels = BEDROCK.list_foundation_models(byProvider=vendor)
     print("\n".join(list(map(lambda x: f"{x['modelName']} : { x['modelId'] }", listModels['modelSummaries']))))
 
-CHAT_CONTEXT = ClaudeChat()
+CHAT = ClaudeChat()
 
 def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model="", image_url="", reset=False):
     if reset:
-        CHAT_CONTEXT.reset_context()
+        CHAT.reset_context()
     
     if system != "":
-        CHAT_CONTEXT.set_system(system)
+        CHAT.set_system(system)
     
     if image_url != "":
-        CHAT_CONTEXT.add_image_message(image_url=image_url, prompt=prompt)
+        CHAT.add_image_message(image_url=image_url, prompt=prompt)
     else:
-        CHAT_CONTEXT.add_message("user", prompt)
+        CHAT.add_message("user", prompt)
 
     try:
         if BEDROCK_RUNTIME is None:
@@ -101,18 +101,18 @@ def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model
             body=json.dumps(
                 {
                     "anthropic_version": "bedrock-2023-05-31",
-                    "system": CHAT_CONTEXT.get_system(),
+                    "system": CHAT.get_system(),
                     "max_tokens": tokens,
                     "temperature": temperature,
                     "top_p": topP,
                     "max_tokens": tokens,
-                    "messages": CHAT_CONTEXT.get_messages(),
+                    "messages": CHAT.get_messages(),
                 }
             ),
         )
 
         result = json.loads(response.get('body').read())
-        CHAT_CONTEXT.add_message("assistant", result['content'][0]['text'])
+        CHAT.add_message("assistant", result['content'][0]['text'])
 
         return result['content'][0]['text']
 

@@ -16,29 +16,29 @@ def _claude3_text(prompt, system='', temperature=0.0, topP=1, tokens=512, model=
 
     return message.content[0].text
 
-CHAT_CONTEXT = ClaudeChat()
+CHAT = ClaudeChat()
 
 def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model="", image_url="", reset=False):
     if reset:
-        CHAT_CONTEXT.reset_context()
+        CHAT.reset_context()
     
     if system != "":
-        CHAT_CONTEXT.set_system(system)
+        CHAT.set_system(system)
     
     if image_url != "":
-        CHAT_CONTEXT.add_image_message(prompt=prompt, image_url=image_url)
+        CHAT.add_image_message(prompt=prompt, image_url=image_url)
     else:
-        CHAT_CONTEXT.add_message("user", prompt)
+        CHAT.add_message("user", prompt)
 
     message  = anthropic.Anthropic().messages.create(
         model=model,
-        system=CHAT_CONTEXT.get_system(),
+        system=CHAT.get_system(),
         temperature=temperature,
         top_p=topP,
         max_tokens=tokens,
-        messages=CHAT_CONTEXT.get_messages()
+        messages=CHAT.get_messages()
     )
-    CHAT_CONTEXT.add_message("assistant", message.content[0].text)
+    CHAT.add_message("assistant", message.content[0].text)
     return message.content[0].text
 
 @metrics.track

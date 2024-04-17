@@ -8,32 +8,32 @@ def init():
     global OPENAI
     OPENAI = OpenAI()
 
-CHAT_CONTEXT = GptChat()
+CHAT = GptChat()
 
 def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", model="", reset=False):
     if OPENAI is None:
         init()
 
     if reset:
-        CHAT_CONTEXT.reset_context()
+        CHAT.reset_context()
     
     if system != "":
-        CHAT_CONTEXT.add_message("system", system)
+        CHAT.add_message("system", system)
     
     if image_url != "":
-        CHAT_CONTEXT.add_image_message(prompt=prompt, image_url=image_url)
+        CHAT.add_image_message(prompt=prompt, image_url=image_url)
     else:
-        CHAT_CONTEXT.add_message("user", prompt)
+        CHAT.add_message("user", prompt)
 
     response = OPENAI.chat.completions.create(
         model=model,
-        messages=CHAT_CONTEXT.get_messages(),
+        messages=CHAT.get_messages(),
         temperature=temperature,
         top_p=topP,
         max_tokens=tokens,
     )
     response_text = response.choices[0].message.content.strip()
-    CHAT_CONTEXT.add_message("assistant", response_text)
+    CHAT.add_message("assistant", response_text)
     return response_text
 
 @metrics.track
