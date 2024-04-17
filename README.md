@@ -19,7 +19,7 @@ prompt = 'How many faces does a tetrahedron have?'
 openai.text(prompt)
 bedrock.text(prompt)
 anthropic.text(prompt)
-ollama.mistral_text(prompt)
+ollama.text(prompt)
 instrument.metrics.stats()
 ```
 
@@ -60,6 +60,12 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 11. **Visual chat on OpenAI:** Explore `11-chat-openai.ipynb` for visual chat using OpenAI GPT4-Turbo.
 
 ## What's New
+
+### 2024-04-17 (Release 0.1.3)
+
+- Save, list, load, and render chat for Bedrock/Claude3
+- Save, list, load, and render chat for Anthropic
+- Save, list, load, and render chat for OpenAI
 
 ### 2024-04-15 (Release 0.1.2)
 

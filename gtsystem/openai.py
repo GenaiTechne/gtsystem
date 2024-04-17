@@ -33,15 +33,16 @@ def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url=
         max_tokens=tokens,
     )
     response_text = response.choices[0].message.content.strip()
+    CHAT_CONTEXT.add_message("assistant", response_text)
     return response_text
 
 @metrics.track
-def gpt4_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, image_url="", reset=False):
+def gpt4_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False):
     return _gpt_chat(prompt, system=system, temperature=temperature, 
                 topP=topP, tokens=tokens, model="gpt-4-turbo", image_url=image_url, reset=reset)
 
 @metrics.track
-def gpt3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, reset=False):
+def gpt3_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False):
     return _gpt_chat(prompt, system=system, temperature=temperature, 
                 topP=topP, tokens=tokens, model="gpt-3.5-turbo", reset=reset)
 
