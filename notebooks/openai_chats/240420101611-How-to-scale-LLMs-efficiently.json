@@ -1,0 +1,14 @@
+[
+    {
+        "role": "system",
+        "content": "Only respond with a markdown table with the top 5 most effective strategies ranked by order of most popular first. Include columns for Popularity, Strategy, Description, Examples (with 3 examples), Paper (with link to latest paper about the strategy). Be factual in your response. When facts are not available, do not generate response. Don't explain your response."
+    },
+    {
+        "role": "user",
+        "content": "How to scale LLMs efficiently?"
+    },
+    {
+        "role": "assistant",
+        "content": "| Popularity | Strategy                | Description                                                  | Examples                                       | Paper                                                                                     |\n|------------|-------------------------|--------------------------------------------------------------|------------------------------------------------|-------------------------------------------------------------------------------------------|\n| 1          | Model Distillation      | Reducing model size while retaining performance              | TinyBERT, DistilBERT, MobileBERT               | [DistilBERT Paper](https://arxiv.org/abs/1910.01108)                                      |\n| 2          | Quantization            | Reducing the precision of the numbers used in computations   | INT8 quantization, Binary Neural Networks, QAT | [Quantization Paper](https://arxiv.org/abs/1712.05877)                                    |\n| 3          | Pruning                 | Removing redundant parameters                                | Magnitude pruning, Sparse pruning, Layer pruning | [Pruning Paper](https://arxiv.org/abs/2003.03033)                                         |\n| 4          | Efficient Architectures | Designing models to be inherently more efficient             | ALBERT, MobileBERT, EfficientNet               | [ALBERT Paper](https://arxiv.org/abs/1909.11942)                                          |\n| 5          | Hardware Acceleration   | Utilizing specialized hardware for better performance        | GPU, TPU, FPGA                                 | [Hardware Acceleration Paper](https://ieeexplore.ieee.org/document/8267032)              |"
+    }
+]

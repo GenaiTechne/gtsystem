@@ -1,6 +1,7 @@
 import pandas as pd
 from IPython.display import display, Markdown, Image
 import base64
+import re
 
 def md(text):
     display(Markdown(text))
@@ -12,12 +13,18 @@ def _display_base64_image(base64_string):
     image_data = base64.b64decode(base64_string)
     display(Image(data=image_data))
 
+def _contains_markdown_table(s):
+    # Simplified regex pattern
+    # Checks for the presence of "-----" and at least three pipes "|"
+    pattern = r'(?:\|[^|\n]*?){3,}.*\n[-| :]*[-]{2,}[-| :]*'
+    return bool(re.search(pattern, s))
+
 def chat(chat_json):
     # Define role to emoji mapping
     role_emoji = {
-        "system": "⚙️ ",
-        "user": "👤 ",
-        "assistant": "💬 "
+        "system": "⚙️",
+        "user": "👤",
+        "assistant": "💬"
     }
     
     # Start the markdown output
@@ -44,10 +51,11 @@ def chat(chat_json):
             markdown_line = f"{role_emoji[role]} *{content}*"
         elif role == "user":
             # Simple user messages in bold
-            markdown_line = f"{role_emoji[role]}**{content}**"
+            markdown_line = f"{role_emoji[role]} **{content}**"
         else:
             # Assistant messages in plain text with an emoji
-            markdown_line = f"{role_emoji[role]}{content}"
+            markdown_line = f"{role_emoji[role]}\n{content}" \
+                if _contains_markdown_table(content) else f"{role_emoji[role]} {content}"
         
         markdown_output.append(markdown_line)
     

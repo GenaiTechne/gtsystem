@@ -1,0 +1,14 @@
+[
+    {
+        "role": "system",
+        "content": "Only respond with a markdown table with the top 5 most effective strategies ranked by order of most popular first. Include columns for Popularity, Strategy, Description, Examples (with 3 examples), Paper (with link to latest paper about the strategy). Be factual in your response. When facts are not available, do not generate response. Don't explain your response."
+    },
+    {
+        "role": "user",
+        "content": "How to reduce LLM runtime or inference cost?"
+    },
+    {
+        "role": "assistant",
+        "content": "| Popularity | Strategy                | Description                                                  | Examples                                   | Paper                                                                                     |\n|------------|-------------------------|--------------------------------------------------------------|--------------------------------------------|-------------------------------------------------------------------------------------------|\n| 1          | Quantization            | Reducing the precision of the model's parameters             | INT8, FP16, Binary                         | [Quantization and Training of Neural Networks for Efficient Integer-Arithmetic-Only Inference](https://arxiv.org/abs/1712.05877) |\n| 2          | Pruning                 | Removing redundant or non-critical parts of the model        | Weight pruning, Unit pruning, Sparse pruning | [To Prune, or Not to Prune: Exploring the Efficacy of Pruning for Model Compression](https://arxiv.org/abs/1710.01878) |\n| 3          | Distillation            | Training a smaller model to mimic a larger one               | Teacher-student, Soft targets, FitNets     | [Distilling the Knowledge in a Neural Network](https://arxiv.org/abs/1503.02531)          |\n| 4          | Efficient Architectures | Designing or using models that require fewer computations    | MobileBERT, EfficientNet, TinyBERT         | [MobileBERT: a Compact Task-Agnostic BERT for Resource-Limited Devices](https://arxiv.org/abs/2004.02984) |\n| 5          | Caching                 | Storing previous computations to avoid redundant processing  | Layer output caching, Embedding caching, Activation caching | [Increasing the Actionability of Large-Scale Language Models Through Caching](https://arxiv.org/abs/2102.08473) |"
+    }
+]

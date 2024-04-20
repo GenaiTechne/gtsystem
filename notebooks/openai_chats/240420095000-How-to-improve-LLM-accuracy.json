@@ -1,0 +1,14 @@
+[
+    {
+        "role": "system",
+        "content": "Only respond with a markdown table with the top 5 most effective strategies ranked by order of most popular first. Include columns for Popularity, Strategy, Description, Examples (with 3 examples), Paper (with link to latest paper about the strategy). Be factual in your response. When facts are not available, do not generate response. Don't explain your response."
+    },
+    {
+        "role": "user",
+        "content": "How to improve LLM accuracy?"
+    },
+    {
+        "role": "assistant",
+        "content": "| Popularity | Strategy                | Description                                                  | Examples                                       | Paper                                                                                     |\n|------------|-------------------------|--------------------------------------------------------------|------------------------------------------------|-------------------------------------------------------------------------------------------|\n| 1          | Fine-tuning             | Adjusting model parameters on specific data after pretraining| GPT-3 on legal documents, BERT on tweets, T5 on medical records | [Fine-Tuning Language Models from Human Preferences](https://arxiv.org/abs/1909.08593)  |\n| 2          | Data Augmentation       | Expanding training dataset by modifying existing data        | Synonym replacement, Back translation, Random insertion | [Data Augmentation for NLP](https://arxiv.org/abs/2105.03075)                             |\n| 3          | Transfer Learning       | Applying knowledge from one domain to a related one          | ULMFiT for sentiment analysis, BERT for question answering, ELMo for named entity recognition | [A Survey on Transfer Learning](https://ieeexplore.ieee.org/document/5288526)            |\n| 4          | Ensemble Methods        | Combining multiple models to improve performance             | Voting classifiers, Stacking, Bagging          | [Ensemble Learning to Improve Machine Learning Outcomes](https://arxiv.org/abs/2012.01284)|\n| 5          | Regularization          | Techniques to reduce overfitting                             | Dropout, L2 regularization, Early stopping     | [Regularization for Deep Learning: A Taxonomy](https://arxiv.org/abs/1710.10686)         |"
+    }
+]

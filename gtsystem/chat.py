@@ -1,14 +1,30 @@
 import base64
 import httpx
-
 import json
 import os
 from datetime import datetime
 
-class GptChat:
+def _extract_texts(content):
+    if isinstance(content, str):
+        return [content]
+    elif isinstance(content, list):
+        return next((item["text"] for item in content if item["type"] == "text"), "")
+    return []
+
+def _contains_query(messages, query):
+    """ Check if any message contains the query text. """
+    lower_query = query.lower()
+    for message in messages:
+        texts = _extract_texts(message['content'])
+        for text in texts:
+            if lower_query in text.lower():
+                return True
+    return False
+
+class BaseChat:
     def __init__(self):
         self.messages = []
-        self.save_folder = "openai_chats"  # Define a folder for saving chats
+        self.save_folder = ''
 
     def add_message(self, role, text):
         self.messages.append({"role": role, "content": text})
@@ -19,24 +35,7 @@ class GptChat:
     def get_messages(self):
         return self.messages
 
-    def add_image_message(self, prompt, image_url):
-        self.messages.append({
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": prompt
-                },
-                {
-                    "type": "image_url",
-                    "image_url": {
-                        "url": image_url,
-                    },
-                }
-            ],
-        })
-
-    def save_chat(self):
+    def save(self):
         if not self.messages:
             print("No chat to save.")
             return
@@ -68,7 +67,7 @@ class GptChat:
             json.dump(self.messages, f, ensure_ascii=False, indent=4)
         print(f"Chat saved to {file_path}")
 
-    def load_chat(self, file_name):
+    def load(self, file_name):
         file_path = os.path.join(self.save_folder, file_name)
         if not os.path.exists(file_path):
             print(f"No file found with name {file_name}")
@@ -79,7 +78,7 @@ class GptChat:
         print(f"Chat loaded from {file_path}")
         return self.messages
 
-    def list_chats(self):
+    def list(self):
         # List all files in the save folder
         if not os.path.exists(self.save_folder):
             print("Save folder not found.")
@@ -91,7 +90,61 @@ class GptChat:
 
         return files
 
-class ClaudeChat:
+    def search(self, query):
+        matching_files = []
+        for filename in os.listdir(self.save_folder):
+            if filename.endswith('.json'):
+                filepath = os.path.join(self.save_folder, filename)
+                with open(filepath, 'r') as file:
+                    data = json.load(file)
+                    if _contains_query(data, query):
+                        matching_files.append(filename)
+        return matching_files
+
+    def match(self, input_string):
+        input_words = input_string.rstrip('.?').lower().split()
+
+        for filename in os.listdir(self.save_folder):
+            if filename.endswith('.json'):
+                clean_filename = filename[:-5]
+                hyphen_index = clean_filename.find('-')
+                if hyphen_index != -1:
+                    words_part = clean_filename[hyphen_index+1:]
+                else:
+                    words_part = clean_filename
+
+                filename_words = words_part.lower().split('-')
+                
+                num_filename_words = len(filename_words)
+                
+                if len(input_words) >= num_filename_words:
+                    if input_words[:num_filename_words] == filename_words:
+                        return filename
+        return None
+
+class GptChat(BaseChat):
+    def __init__(self):
+        self.messages = []
+        self.save_folder = "openai_chats"
+
+    def add_image_message(self, prompt, image_url):
+        self.messages.append({
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": prompt
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": image_url,
+                    },
+                }
+            ],
+        })
+
+class ClaudeChat(BaseChat):
     def __init__(self):
         self.messages = []
         self.system = ""
@@ -102,16 +155,10 @@ class ClaudeChat:
 
     def get_system(self):
         return self.system
-
-    def add_message(self, role, text):
-        self.messages.append({"role": role, "content": text})
     
     def reset_context(self):
         self.messages = []
         self.system = ""
-    
-    def get_messages(self):
-        return self.messages
 
     def add_image_message(self, prompt, image_url):
         image_media_type = "image/jpeg"
@@ -134,7 +181,7 @@ class ClaudeChat:
             ],
         })
 
-    def save_chat(self):
+    def save(self):
         if not self.messages:
             print("No chat to save.")
             return
@@ -169,7 +216,7 @@ class ClaudeChat:
             json.dump(self.messages, f, ensure_ascii=False, indent=4)
         print(f"Chat saved to {file_path}")
 
-    def load_chat(self, file_name):
+    def load(self, file_name):
         file_path = os.path.join(self.save_folder, file_name)
         if not os.path.exists(file_path):
             print(f"No file found with name {file_name}")
@@ -193,15 +240,4 @@ class ClaudeChat:
 
         print(f"Chat loaded from {file_path}")
         return self.messages
-
-    def list_chats(self):
-        # List all files in the save folder
-        if not os.path.exists(self.save_folder):
-            print("Save folder not found.")
-            return []
-
-        # Retrieve the list of files and sort them in descending alphanumeric order
-        files = os.listdir(self.save_folder)
-        files.sort(reverse=True)  # Set reverse=True to sort in descending order
-
-        return files
+    

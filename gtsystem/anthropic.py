@@ -18,7 +18,14 @@ def _claude3_text(prompt, system='', temperature=0.0, topP=1, tokens=512, model=
 
 CHAT = ClaudeChat()
 
-def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model="", image_url="", reset=False):
+def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model="", image_url="", 
+                  reset=False, cache=False):
+    if cache:
+        cache_match = CHAT.match(prompt)
+        if cache_match:
+            CHAT.load(cache_match)
+            return next(msg['content'] for msg in CHAT.messages if msg['role'] == 'assistant')
+
     if reset:
         CHAT.reset_context()
     
@@ -42,25 +49,28 @@ def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model
     return message.content[0].text
 
 @metrics.track
-def sonnet_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", reset=False):
+def sonnet_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", 
+                reset=False, cache=False):
     return _claude3_chat(prompt, system=system, 
                          temperature=temperature, topP=topP, tokens=tokens, 
                          model='claude-3-sonnet-20240229',
-                         image_url=image_url, reset=reset)
+                         image_url=image_url, reset=reset, cache=cache)
 
 @metrics.track
-def opus_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", reset=False):
+def opus_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", 
+              reset=False, cache=False):
     return _claude3_chat(prompt, system=system, 
                          temperature=temperature, topP=topP, tokens=tokens, 
                          model='claude-3-opus-20240229',
-                         image_url=image_url, reset=reset)
+                         image_url=image_url, reset=reset, cache=cache)
 
 @metrics.track
-def haiku_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", reset=False):
+def haiku_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", 
+               reset=False, cache=False):
     return _claude3_chat(prompt, system=system, 
                          temperature=temperature, topP=topP, tokens=tokens, 
                          model='claude-3-haiku-20240307',
-                         image_url=image_url, reset=reset)
+                         image_url=image_url, reset=reset, cache=cache)
 
 @metrics.track
 def opus_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):

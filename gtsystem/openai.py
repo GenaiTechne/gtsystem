@@ -11,9 +11,15 @@ def init():
 
 CHAT = GptChat()
 
-def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False, stream=False, model=""):
+def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False, stream=False, cache=False, model=""):
     if OPENAI is None:
         init()
+
+    if cache:
+        cache_match = CHAT.match(prompt)
+        if cache_match:
+            CHAT.load(cache_match)
+            return next(msg['content'] for msg in CHAT.messages if msg['role'] == 'assistant')
 
     if reset:
         CHAT.reset_context()
@@ -49,15 +55,17 @@ def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url=
     return response_text
 
 @metrics.track
-def gpt4_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False, stream=False):
+def gpt4_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False, 
+              stream=False, cache=False):
     return _gpt_chat(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, image_url=image_url, reset=reset, 
-                stream=stream, model="gpt-4-turbo")
+                topP=topP, tokens=tokens, image_url=image_url, reset=reset,
+                stream=stream, cache=cache, model="gpt-4-turbo")
 
 @metrics.track
-def gpt3_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, stream=False):
+def gpt3_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, stream=False, cache=False):
     return _gpt_chat(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, reset=reset, stream=stream, model="gpt-3.5-turbo")
+                topP=topP, tokens=tokens, reset=reset, 
+                stream=stream, cache=cache, model="gpt-3.5-turbo")
 
 def _gpt_text(prompt, system='', temperature=0.0, topP=1, tokens=512, stream=False, model=""):
     if OPENAI is None:
@@ -112,16 +120,16 @@ def text(prompt, system='', temperature=0.0, topP=1, tokens=512, stream=False, m
         case _:
             return 'Please specify a valid model name'
 
-def chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, stream=False, 
+def chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, stream=False, cache=False,
          image_url="", model="gpt4"):
     match model:
         case 'gpt3':
             return gpt3_chat(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, reset=reset, 
+                topP=topP, tokens=tokens, reset=reset, cache=cache,
                 stream=stream)
         case 'gpt4':
             return gpt4_chat(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, reset=reset, image_url=image_url,
+                topP=topP, tokens=tokens, reset=reset, cache=cache, image_url=image_url,
                 stream=stream)
         case _:
             return 'Please specify a valid model name'

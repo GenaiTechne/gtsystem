@@ -61,6 +61,13 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 ## What's New
 
+### 2024-04-20 (Release 0.1.7)
+
+- Render from cached chat history to save time and cost
+- Added chat.search feature to search saved openai and claude chats
+- Fixed markdown table rendering for render.chat
+- Optimized GptChat and ClaudeChat classes to inherit from BaseChat
+
 ### 2024-04-20 (Release 0.1.6)
 
 - Improved benchmark.quality to provide step-by-step weighted criteria based quality scoring
