@@ -1,6 +1,7 @@
 from openai import OpenAI
 from .chat import GptChat
 from .instrument import metrics
+from IPython.display import clear_output
 
 OPENAI = None
 
@@ -10,7 +11,7 @@ def init():
 
 CHAT = GptChat()
 
-def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", model="", reset=False):
+def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False, stream=False, model=""):
     if OPENAI is None:
         init()
 
@@ -31,22 +32,34 @@ def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url=
         temperature=temperature,
         top_p=topP,
         max_tokens=tokens,
+        stream=stream
     )
-    response_text = response.choices[0].message.content.strip()
+    if stream:
+        all_chunks = ""
+        for chunk in response:
+            part = chunk.choices[0].delta.content
+            if part:
+                print(part, end='')
+                all_chunks += part
+        response_text = all_chunks
+    else:
+        response_text = response.choices[0].message.content.strip()
     CHAT.add_message("assistant", response_text)
+    clear_output()
     return response_text
 
 @metrics.track
-def gpt4_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False):
+def gpt4_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False, stream=False):
     return _gpt_chat(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, model="gpt-4-turbo", image_url=image_url, reset=reset)
+                topP=topP, tokens=tokens, image_url=image_url, reset=reset, 
+                stream=stream, model="gpt-4-turbo")
 
 @metrics.track
-def gpt3_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False):
+def gpt3_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, stream=False):
     return _gpt_chat(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, model="gpt-3.5-turbo", reset=reset)
+                topP=topP, tokens=tokens, reset=reset, stream=stream, model="gpt-3.5-turbo")
 
-def _gpt_text(prompt, system='', temperature=0.0, topP=1, tokens=512, model=""):
+def _gpt_text(prompt, system='', temperature=0.0, topP=1, tokens=512, stream=False, model=""):
     if OPENAI is None:
         init()
 
@@ -65,26 +78,50 @@ def _gpt_text(prompt, system='', temperature=0.0, topP=1, tokens=512, model=""):
         temperature=temperature,
         top_p=topP,
         max_tokens=tokens,
+        stream=stream
     )
-    response_text = response.choices[0].message.content.strip()
+    if stream:
+        all_chunks = ""
+        for chunk in response:
+            part = chunk.choices[0].delta.content
+            if part:
+                print(part, end='')
+                all_chunks += part
+        response_text = all_chunks
+    else:
+        response_text = response.choices[0].message.content.strip()
+    clear_output()
     return response_text
 
 @metrics.track
-def gpt3_text(prompt, system='', temperature=0.0, topP=1, tokens=512):
+def gpt3_text(prompt, system='', temperature=0.0, topP=1, tokens=512, stream=False):
     return _gpt_text(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, model="gpt-3.5-turbo")
+                topP=topP, tokens=tokens, stream=stream, model="gpt-3.5-turbo")
 
 @metrics.track
-def gpt4_text(prompt, system='', temperature=0.0, topP=1, tokens=512):
+def gpt4_text(prompt, system='', temperature=0.0, topP=1, tokens=512, stream=False):
     return _gpt_text(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, model="gpt-4-turbo-preview")
+                topP=topP, tokens=tokens, stream=stream, model="gpt-4-turbo-preview")
 
-def text(prompt, system='', temperature=0.0, topP=1, tokens=512, model="gpt4"):
+def text(prompt, system='', temperature=0.0, topP=1, tokens=512, stream=False, model="gpt4"):
     match model:
         case 'gpt3':
-            return gpt3_text(prompt, system, temperature, topP, tokens)
+            return gpt3_text(prompt, system, temperature, topP, tokens, stream)
         case 'gpt4':
-            return gpt4_text(prompt, system, temperature, topP, tokens)
+            return gpt4_text(prompt, system, temperature, topP, tokens, stream)
         case _:
             return 'Please specify a valid model name'
 
+def chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, stream=False, 
+         image_url="", model="gpt4"):
+    match model:
+        case 'gpt3':
+            return gpt3_chat(prompt, system=system, temperature=temperature, 
+                topP=topP, tokens=tokens, reset=reset, 
+                stream=stream)
+        case 'gpt4':
+            return gpt4_chat(prompt, system=system, temperature=temperature, 
+                topP=topP, tokens=tokens, reset=reset, image_url=image_url,
+                stream=stream)
+        case _:
+            return 'Please specify a valid model name'

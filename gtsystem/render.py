@@ -8,7 +8,7 @@ def md(text):
 def img(url):
     return Image(url=url)
 
-def display_base64_image(base64_string):
+def _display_base64_image(base64_string):
     image_data = base64.b64decode(base64_string)
     display(Image(data=image_data))
 
@@ -37,7 +37,7 @@ def chat(chat_json):
                 elif item['type'] == 'image_url':
                     display(Image(url=item['image_url']['url']))
                 elif item['type'] == 'image' and item['source']['type'] == 'base64':
-                    display_base64_image(item['source']['data'])
+                    _display_base64_image(item['source']['data'])
             markdown_line = '\n'.join(text_lines)
         elif role == "system":
             # System messages in italics

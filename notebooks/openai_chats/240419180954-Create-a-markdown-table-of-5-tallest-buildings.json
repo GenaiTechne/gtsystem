@@ -1,0 +1,26 @@
+[
+    {
+        "role": "user",
+        "content": "Create a markdown table of 5 tallest buildings"
+    },
+    {
+        "role": "assistant",
+        "content": "| Building Name       | City           | Height (m) | Floors |\n|---------------------|----------------|------------|--------|\n| Burj Khalifa        | Dubai          | 828        | 163    |\n| Shanghai Tower      | Shanghai       | 632        | 128    |\n| Abraj Al-Bait Clock Tower | Mecca     | 601        | 120    |\n| Ping An Finance Center | Shenzhen    | 599        | 115    |\n| Lotte World Tower   | Seoul          | 555        | 123    |"
+    },
+    {
+        "role": "user",
+        "content": "Add a column for Year Built"
+    },
+    {
+        "role": "assistant",
+        "content": "| Building Name       | City           | Height (m) | Floors | Year Built |\n|---------------------|----------------|------------|--------|------------|\n| Burj Khalifa        | Dubai          | 828        | 163    | 2010       |\n| Shanghai Tower      | Shanghai       | 632        | 128    | 2015       |\n| Abraj Al-Bait Clock Tower | Mecca     | 601        | 120    | 2012       |\n| Ping An Finance Center | Shenzhen    | 599        | 115    | 2017       |\n| Lotte World Tower   | Seoul          | 555        | 123    | 2016       |"
+    },
+    {
+        "role": "user",
+        "content": "Remove Height in feet and add a column for Floors"
+    },
+    {
+        "role": "assistant",
+        "content": "| Building Name       | City           | Height (m) | Floors | Year Built |\n|---------------------|----------------|------------|--------|------------|\n| Burj Khalifa        | Dubai          | 828        | 163    | 2010       |\n| Shanghai Tower      | Shanghai       | 632        | 128    | 2015       |\n| Abraj Al-Bait Clock Tower | Mecca     | 601        | 120    | 2012       |\n| Ping An Finance Center | Shenzhen    | 599        | 115    | 2017       |\n| Lotte World Tower   | Seoul          | 555        | 123    | 2016       |"
+    }
+]

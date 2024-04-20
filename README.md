@@ -61,6 +61,12 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 ## What's New
 
+### 2024-04-19 (Release 0.1.4)
+
+- Stream chat and text for OpenAI
+- openai.chat() simplifier API
+- GenAI Advisor - Trends feature
+
 ### 2024-04-17 (Release 0.1.3)
 
 - Save, list, load, and render chat for Bedrock/Claude3
