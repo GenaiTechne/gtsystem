@@ -61,6 +61,11 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 ## What's New
 
+### 2024-04-19 (Release 0.1.5)
+
+- Groq with Llama3
+- Ollama with Llama3
+
 ### 2024-04-19 (Release 0.1.4)
 
 - Stream chat and text for OpenAI
