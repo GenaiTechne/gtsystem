@@ -1,0 +1,9 @@
+quality:
+  - criteria: "factual or accurate (high score) vs hallucinating or inaccurate (low score)"
+    weight: 0.3
+  - criteria: "human readability"
+    weight: 0.2
+  - criteria: "crisp (high score) vs verbose (low score)"
+    weight: 0.1
+  - criteria: "meets user goal (high score) vs deviates from user goal (low score)"
+    weight: 0.4

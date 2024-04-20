@@ -42,7 +42,7 @@ def llama2_text(prompt, system='', temperature=0.0, topP=1, tokens=512, model="l
 
 def text(prompt, system='', temperature=0.0, topP=1, tokens=512, model="llama3"):
     match model:
-        case 'mistral':
+        case 'mixtral':
             return mixtral_text(prompt, system=system, temperature=temperature, topP=topP, 
                               tokens=tokens)
         case 'llama3':

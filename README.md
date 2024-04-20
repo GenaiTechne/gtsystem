@@ -61,6 +61,12 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 ## What's New
 
+### 2024-04-20 (Release 0.1.6)
+
+- Improved benchmark.quality to provide step-by-step weighted criteria based quality scoring
+- Parametrized benchmark quality criteria using data/config.yaml
+- Minor fixes to groq API
+
 ### 2024-04-19 (Release 0.1.5)
 
 - Groq with Llama3
