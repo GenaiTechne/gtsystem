@@ -6,8 +6,11 @@ def get(task = ''):
     prompt = TASKS[TASKS['Task'] == task]['Prompt'].values[0]
     return prompt, system
 
-def list(start=1, end=5):
-    return TASKS.iloc[start:end]
+def list(start=None, end=None):
+    if not start or not end:
+        return TASKS.iloc[0:]
+    else:
+        return TASKS.iloc[start:end]
 
 def find(task='', prompt=''):
     if task != '':

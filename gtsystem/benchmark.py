@@ -1,46 +1,75 @@
 from .anthropic import opus_text
+from .openai import gpt4_text
 import yaml
 
-def config_quality_criteria():
-    # Example usage with data from a file
+QUALITY_SCORE = []
+
+def evaluator_model():
     file_path = '../data/config.yaml'
 
-    # Read the data from the file
     with open(file_path, 'r') as file:
         data = file.read()    
 
-    # Parse the YAML formatted string
+    evaluator = yaml.safe_load(data)
+    return evaluator['benchmark'][0]['model']
+
+def config_quality_criteria():
+    file_path = '../data/config.yaml'
+
+    with open(file_path, 'r') as file:
+        data = file.read()    
+
     criteria_data = yaml.safe_load(data)
-    
-    # Initialize a list to store the formatted criteria strings
     formatted_criteria = []
     
-    # Iterate over each criteria in the 'quality' key
     for item in criteria_data['quality']:
-        # Extract the criteria description and weight
         criteria = item.get('criteria', 'Undefined criteria')
         weight = item.get('weight', 0)
-        
-        # Format the string as required and add to the list
         formatted_criteria.append(f'- {criteria} | weight: {weight}')
     
-    # Join all formatted strings with a newline
     return '\n'.join(formatted_criteria)
 
-def quality(prompt, system='', result=''):
+import re
+
+def extract_quality_score(input_string):
+    pattern = r"Average quality score = (\d+\.\d+)/100\.$"
+    match = re.search(pattern, input_string)
+    
+    if match:
+        score = float(match.group(1))
+        return score
+    else:
+        return
+
+def quality(prompt, system='', result='', fn=''):
     system = f"""You are an expert evaluator of an LLM response 
     who can reflect on an LLM response, to a given system and/or user prompt,
     and assess a quality score on a scale of 0 for low to 100 for high quality.
-    Think step by step to assess quality based on criteria and associated weights:
+    Think step by step to assess quality based on the criteria:
     {config_quality_criteria()}
-    Respond with a markdown table with columns for Criteria, Weight, Score, Explaination (one sentence).
-    Tally the weighted scores in your mind and respond in following format:
-    Overall quality score = 98.3/100."""
+    Respond with a markdown table with columns for Criteria, Score, Explaination (one sentence).
+    Average the scores in your mind and respond in following format:
+    Average quality score = 98.3/100."""
     prompt = f"""Assess the quality of the following LLM response based on the 
     given System and/or User prompt:
     System: {system} 
     User: {prompt}
     Response: {result}"""
-    
-    quality_score = opus_text(prompt=prompt, system=system)
+
+    evaluator = evaluator_model()
+    if evaluator == "gpt4":
+        quality_score = gpt4_text(prompt=prompt, system=system)
+    else:
+        quality_score = opus_text(prompt=prompt, system=system)
+
+    QUALITY_SCORE.append({"Model": fn, "Score": extract_quality_score(quality_score)})
     return quality_score
+
+def stats():
+    markdown_table = "| Model | Quality Score |\n"
+    markdown_table += "|-------|--------------|\n"
+    for item in QUALITY_SCORE:
+        model = item["Model"]
+        score = item["Score"]
+        markdown_table += f"| {model} | {score} |\n"
+    return markdown_table

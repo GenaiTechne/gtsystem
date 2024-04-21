@@ -61,6 +61,13 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 ## What's New
 
+### 2024-04-21 (Release 0.1.8)
+
+- Improve configurable quality benchmark criteria
+- Ability to merge instrumentation and benchmarking stats in one table
+- Quality evaluation tasks dataset
+- Configurable GPT4 or Opus model for automated self/other benchmarking
+
 ### 2024-04-20 (Release 0.1.7)
 
 - Render from cached chat history to save time and cost

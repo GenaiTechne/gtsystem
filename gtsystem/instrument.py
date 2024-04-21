@@ -46,7 +46,7 @@ class Instrument:
         finally:
             self.tracking_enabled = original_state
 
-    def stats(self):
+    def stats(self, benchmark=""):
         models = []
         calls = []
         total_times = []
@@ -69,15 +69,36 @@ class Instrument:
         average_times = [average_times[i] for i in sorted_indices]
         average_sizes = [average_sizes[i] for i in sorted_indices]
 
+        # Parse the benchmark table if provided
+        quality_scores = {}
+        include_quality_score = False  # Flag to indicate if the quality score should be included
+        if benchmark:
+            lines = benchmark.strip().split('\n')[2:]  # skip the header lines
+            for line in lines:
+                parts = line.split('|')
+                model = parts[1].strip()
+                score = parts[2].strip()
+                quality_scores[model] = score
+            include_quality_score = True
+
         # Start constructing the Markdown table
-        markdown_table = "| Model | Calls | Total Time | Total Return Size | Average Time | Average Size |\n"
-        markdown_table += "|-------|-------|------------|-------------------|--------------|--------------|\n"
+        markdown_table = "| Model | Calls | Total Time | Total Return Size | Average Time | Average Size |"
+        if include_quality_score:
+            markdown_table += " Quality Score |\n"
+            markdown_table += "|-------|-------|------------|-------------------|--------------|--------------|---------------|\n"
+        else:
+            markdown_table += "\n"
+            markdown_table += "|-------|-------|------------|-------------------|--------------|--------------|\n"
 
         # Fill the table with sorted data
-        for i in range(len(models)):
-            markdown_table += f"| {models[i]} | {calls[i]} | {total_times[i]:.2f} | {total_return_sizes[i]:.2f} | {average_times[i]:.2f} | {average_sizes[i]:.2f} |\n"
+        for model, call, total_time, total_return_size, average_time, average_size in zip(models, calls, total_times, total_return_sizes, average_times, average_sizes):
+            model_clean = model.replace('gtsystem.','')
+            markdown_table += f"| {model_clean} | {call} | {total_time:.2f} | {total_return_size:.2f} | {average_time:.2f} | {average_size:.2f} |"
+            if include_quality_score:
+                quality_score = quality_scores.get(model_clean, 'N/A')
+                markdown_table += f" {quality_score} |"
+            markdown_table += "\n"
 
         return markdown_table
-
 
 metrics = Instrument()

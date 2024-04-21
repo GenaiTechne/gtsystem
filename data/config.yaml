@@ -1,9 +1,24 @@
-quality:
-  - criteria: "factual or accurate (high score) vs hallucinating or inaccurate (low score)"
-    weight: 0.3
-  - criteria: "human readability"
-    weight: 0.2
-  - criteria: "crisp (high score) vs verbose (low score)"
-    weight: 0.1
-  - criteria: "meets user goal (high score) vs deviates from user goal (low score)"
-    weight: 0.4
+quality: # tally weights to 1
+  - criteria: "Depth of Verification: Assess the LLM's ability to provide verifiable information,\
+  incorporating checks for source credibility and the capacity to distinguish between\
+  commonly accepted facts and disputed claims."
+  - criteria: "Context Awareness: Evaluate the LLM's understanding of context to ensure\
+  responses are not only accurate in isolation but also relevant to the specific user scenario."
+  - criteria: "Tone and Style Adaptability: Measure the ability of the LLM to match the tone and style\
+  appropriate to the user's query, including formal, casual, technical, or narrative styles."
+  - criteria: "Clarity and Understandability: Beyond basic readability, assess how well the LLM can\
+  explain complex topics in a way that is easy to understand for the intended audience."
+  - criteria: "Information Density: Evaluate the ability to convey information efficiently without\ 
+  redundancy, focusing on the richness of information relative to the length of the response."
+  - criteria: "Tailoring Content: Assess how well the LLM can tailor the length and detail of its\
+  responses based on the user's implied or stated needs."
+  - criteria: "Argumentation Quality: Evaluate the LLM's ability to construct well-supported arguments\
+  or explanations, assessing logical flow and the use of evidence."
+  - criteria: "Critical Thinking: Measure the capacity for problem-solving, inference, and drawing\
+  reasonable conclusions based on provided or inferred information."
+  - criteria: "Relevance and Focus: Assess how well the LLM identifies and adheres to the\
+  user's primary goal, avoiding irrelevant details."
+  - criteria: "User Intent Understanding: Evaluate the ability to understand and adapt responses based\
+  on different user intents, such as seeking advice, information, instruction, or entertainment."
+benchmark:
+  - model: opus # gpt4 or opus
