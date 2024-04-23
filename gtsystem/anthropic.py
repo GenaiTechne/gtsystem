@@ -100,3 +100,18 @@ def text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='opus')
             return haiku_text(prompt, system, temperature, topP, tokens)
         case _:
             return 'Please specify a valid model name'
+
+def chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, cache=False,
+         image_url="", model="opus"):
+    match model:
+        case 'opus':
+            return opus_chat(prompt, system=system, temperature=temperature, 
+                topP=topP, tokens=tokens, reset=reset, cache=cache, image_url=image_url)
+        case 'sonnet':
+            return sonnet_chat(prompt, system=system, temperature=temperature, 
+                topP=topP, tokens=tokens, reset=reset, cache=cache, image_url=image_url)
+        case 'haiku':
+            return haiku_chat(prompt, system=system, temperature=temperature, 
+                topP=topP, tokens=tokens, reset=reset, cache=cache, image_url=image_url)
+        case _:
+            return 'Please specify a valid model name'

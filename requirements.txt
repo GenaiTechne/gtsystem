@@ -24,6 +24,10 @@ ollama
 # Groq for open models on fast Groq LPUs
 groq
 
+# Streamlit
+streamlit
+watchdog
+
 # === Ignore this after `pip install gtsystem` ===
 # Package
 build

@@ -1,10 +1,19 @@
 import pandas as pd
-from IPython.display import display, Markdown, Image
+from IPython.display import display, Markdown, Image, clear_output
 import base64
 import re
 
 def md(text):
-    display(Markdown(text))
+    if isinstance(text, str):
+        display(Markdown(text))
+    else:
+        full_text = ""
+        for chunk in text:
+            if chunk:
+                full_text += chunk
+                print(chunk, end='')
+        clear_output(wait=True)
+        display(Markdown(full_text))
 
 def img(url):
     return Image(url=url)

@@ -61,6 +61,11 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 ## What's New
 
+### 2024-04-21 (Release 0.2.1)
+
+- Streamlit app with streaming chat playgroud for OpenAI models with configurable system message, temperature, tokens
+- New methods for bedrock.chat and anthropic.chat
+
 ### 2024-04-21 (Release 0.1.8)
 
 - Improve configurable quality benchmark criteria
