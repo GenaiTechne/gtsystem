@@ -1,0 +1,26 @@
+[
+    {
+        "role": "user",
+        "content": "Create a markdown table of 5 tallest buildings"
+    },
+    {
+        "role": "assistant",
+        "content": "| Rank | Building | Height (meters) |\n|---|---|---|\n| 1 | Burj Khalifa | 828 |\n| 2 | Shanghai Tower | 263 |\n| 3 | Ping An Financial Center | 233 |\n| 4 | One World Trade Center | 228 |\n| 5 | Shanghai World Financial Center | 216 |"
+    },
+    {
+        "role": "user",
+        "content": "Add a column for Year Built"
+    },
+    {
+        "role": "assistant",
+        "content": "| Rank | Building | Height (meters) | Year Built |\n|---|---|---|---|\n| 1 | Burj Khalifa | 828 | 2010 |\n| 2 | Shanghai Tower | 263 | 2015 |\n| 3 | Ping An Financial Center | 233 | 2010 |\n| 4 | One World Trade Center | 228 | 2014 |\n| 5 | Shanghai World Financial Center | 216 | 2008 |"
+    },
+    {
+        "role": "user",
+        "content": "Remove Height in feet and add a column for Floors"
+    },
+    {
+        "role": "assistant",
+        "content": "| Rank | Building | Height (meters) | Floors |\n|---|---|---|---|\n| 1 | Burj Khalifa | 828 | 163 |\n| 2 | Shanghai Tower | 263 | 103 |\n| 3 | Ping An Financial Center | 233 | 84 |\n| 4 | One World Trade Center | 228 | 104 |\n| 5 | Shanghai World Financial Center | 216 | 84 |"
+    }
+]

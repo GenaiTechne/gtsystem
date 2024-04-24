@@ -1,7 +1,5 @@
 from openai import OpenAI
 from .chat import GptChat
-from .instrument import metrics
-from IPython.display import clear_output
 
 OPENAI = None
 
@@ -11,8 +9,16 @@ def init():
 
 CHAT = GptChat()
 
-def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", 
-              reset=False, cache=False, model=""):
+MODELS = {
+    'gpt4': 'gpt-4-turbo',
+    'gpt3.5': 'gpt-3.5-turbo'
+}
+
+def list_models():
+    return ['gpt-4-turbo', 'gpt-3.5-turbo']
+
+def chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", 
+              reset=False, cache=False, model=MODELS['gpt4']):
     if OPENAI is None:
         init()
 
@@ -50,19 +56,7 @@ def _gpt_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url=
         response_text = all_chunks
         CHAT.add_message("assistant", response_text)
 
-@metrics.track
-def gpt4_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, image_url="", reset=False, cache=False):
-    for chunk in _gpt_chat(prompt, system=system, temperature=temperature, topP=topP, tokens=tokens, 
-                           image_url=image_url, reset=reset, cache=cache, model="gpt-4-turbo"):
-        yield chunk
-
-@metrics.track
-def gpt3_chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, cache=False):
-    for chunk in _gpt_chat(prompt, system=system, temperature=temperature, topP=topP, tokens=tokens, 
-                           reset=reset, cache=cache, model="gpt-3.5-turbo"):
-        yield chunk
-
-def _gpt_text(prompt, system='', temperature=0.0, topP=1, tokens=512, model=""):
+def text(prompt, system='', temperature=0.0, topP=1, tokens=512, model=MODELS['gpt4']):
     if OPENAI is None:
         init()
 
@@ -87,40 +81,3 @@ def _gpt_text(prompt, system='', temperature=0.0, topP=1, tokens=512, model=""):
         part = chunk.choices[0].delta.content
         if part:
             yield part
-
-@metrics.track
-def gpt3_text(prompt, system='', temperature=0.0, topP=1, tokens=512):
-    for chunk in _gpt_text(prompt, system=system, temperature=temperature, topP=topP, 
-                           tokens=tokens, model="gpt-3.5-turbo"):
-        yield chunk
-
-@metrics.track
-def gpt4_text(prompt, system='', temperature=0.0, topP=1, tokens=512):
-    for chunk in _gpt_text(prompt, system=system, temperature=temperature, topP=topP, 
-                     tokens=tokens, model="gpt-4-turbo-preview"):
-        yield chunk
-
-def text(prompt, system='', temperature=0.0, topP=1, tokens=512, model="gpt4"):
-    match model:
-        case 'gpt4':
-            for chunk in gpt4_text(prompt, system, temperature, topP, tokens):
-                yield chunk
-        case 'gpt3.5':
-            for chunk in gpt3_text(prompt, system, temperature, topP, tokens):
-                yield chunk
-        case _:
-            return 'Please specify a valid model name'
-
-def chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, stream=False, cache=False,
-         image_url="", model="gpt4"):
-    match model:
-        case 'gpt4':
-            for chunk in gpt4_chat(prompt, system=system, temperature=temperature, topP=topP, 
-                                   tokens=tokens, reset=reset, cache=cache, image_url=image_url):
-                yield chunk
-        case 'gpt3.5':
-            for chunk in gpt3_chat(prompt, system=system, temperature=temperature, topP=topP, 
-                                   tokens=tokens, reset=reset, cache=cache):
-                yield chunk
-        case _:
-            return 'Please specify a valid model name'

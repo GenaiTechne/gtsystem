@@ -6,11 +6,9 @@ import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
 
-from .instrument import metrics
 from .chat import ClaudeChat
 
 BEDROCK_RUNTIME = None
-BEDROCK = None
 
 def _get_client(assumed_role=None, region=None, runtime=True):
     if region is None:
@@ -64,24 +62,15 @@ def _init_runtime():
         region=os.environ.get("AWS_DEFAULT_REGION", None)
     )
 
-def _init():
-    global BEDROCK
-    BEDROCK = _get_client(
-        assumed_role=os.environ.get("BEDROCK_ASSUME_ROLE", None),
-        region=os.environ.get("AWS_DEFAULT_REGION", None),
-        runtime=False
-    )
-
-def list_models(vendor):
-    if BEDROCK is None:
-        _init()
-    listModels = BEDROCK.list_foundation_models(byProvider=vendor)
-    print("\n".join(list(map(lambda x: f"{x['modelName']} : { x['modelId'] }", listModels['modelSummaries']))))
+MODELS = {
+    'sonnet': 'anthropic.claude-3-sonnet-20240229-v1:0',
+    'haiku': 'anthropic.claude-3-haiku-20240307-v1:0'
+}
 
 CHAT = ClaudeChat()
 
-def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model="", image_url="", 
-                  reset=False, cache=False):
+def chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, image_url="", 
+         reset=False, cache=False, model=MODELS['sonnet']):
     if cache:
         cache_match = CHAT.match(prompt)
         if cache_match:
@@ -131,24 +120,8 @@ def _claude3_chat(prompt, system='', temperature=0.0, topP=1, tokens=4096, model
         )
         raise
 
-
-@metrics.track
-def sonnet_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", 
-                reset=False, cache=False):
-    return _claude3_chat(prompt, system=system, 
-                         temperature=temperature, topP=topP, tokens=tokens, 
-                         model='anthropic.claude-3-sonnet-20240229-v1:0', 
-                         image_url=image_url, reset=reset, cache=cache)
-
-@metrics.track
-def haiku_chat(prompt, system='', temperature=0.0, topP=1.0, tokens=512, image_url="", 
-               reset=False, cache=False):
-    return _claude3_chat(prompt, system=system, 
-                         temperature=temperature, topP=topP, tokens=tokens, 
-                         model='anthropic.claude-3-haiku-20240307-v1:0', 
-                         image_url=image_url, reset=reset, cache=cache)
-
-def _claude3_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model=''):
+def text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, 
+         model=MODELS['sonnet']):
     try:
         if BEDROCK_RUNTIME is None:
             _init_runtime()
@@ -182,126 +155,3 @@ def _claude3_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, mode
             err.response["Error"]["Message"],
         )
         raise
-
-@metrics.track
-def sonnet_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):
-    return _claude3_text(prompt, system=system, 
-                         temperature=temperature, topP=topP, tokens=tokens, 
-                         model='anthropic.claude-3-sonnet-20240229-v1:0')
-
-@metrics.track
-def haiku_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):
-    return _claude3_text(prompt, system=system, 
-                         temperature=temperature, topP=topP, tokens=tokens, 
-                         model='anthropic.claude-3-haiku-20240307-v1:0')
-
-def _claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model=''):
-
-    decorated_prompt = f'Human: {(system + " " + prompt).strip()}\n\nAssistant:\n'
-    body = json.dumps({"prompt": decorated_prompt, 
-                       "temperature": temperature,
-                       "top_p": topP,
-                       "max_tokens_to_sample": tokens})
-    modelId = model
-    accept = "application/json"
-    contentType = "application/json"
-    
-    try:
-        if BEDROCK_RUNTIME is None:
-            _init_runtime()
-
-        response = BEDROCK_RUNTIME.invoke_model(
-            body=body, modelId=modelId, accept=accept, contentType=contentType
-        )
-        response_body = json.loads(response.get("body").read())
-        response_text = response_body.get("completion").strip()
-    
-        return response_text
-    
-    except ClientError as error:
-    
-        if error.response['Error']['Code'] == 'AccessDeniedException':
-               print(f"\x1b[41m{error.response['Error']['Message']}\
-                    \nTo troubeshoot this issue please refer to the following resources.\
-                     \nhttps://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_access-denied.html\
-                     \nhttps://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html\x1b[0m\n")
-    
-        else:
-            raise error
-
-@metrics.track        
-def claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):
-    return _claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-v2:1')
-
-@metrics.track        
-def instant_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512):
-    return _claude2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='anthropic.claude-instant-v1')
-
-@metrics.track        
-def llama2_text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='meta.llama2-70b-chat-v1'):
-
-    if system != '':
-        decorated_prompt = f'<<SYS>>{system}<</SYS>>\n[INST]User:{prompt}[/INST]\nAssistant:'
-    else:
-        decorated_prompt = prompt
-
-    body = json.dumps({ 
-        'prompt': decorated_prompt,
-        'max_gen_len': tokens,
-        'top_p': topP,
-        'temperature': temperature
-    })
-
-    modelId = model
-    accept = "application/json"
-    contentType = "application/json"
-    
-    try:
-        if BEDROCK_RUNTIME is None:
-            _init_runtime()
-
-        response = BEDROCK_RUNTIME.invoke_model(
-            body=body, modelId=modelId, accept=accept, contentType=contentType
-        )
-        response_body = json.loads(response.get('body').read().decode('utf-8'))
-        response_text = response_body['generation'].strip()
-    
-        return response_text
-    
-    except ClientError as error:
-    
-        if error.response['Error']['Code'] == 'AccessDeniedException':
-               print(f"\x1b[41m{error.response['Error']['Message']}\
-                    \nTo troubeshoot this issue please refer to the following resources.\
-                     \nhttps://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_access-denied.html\
-                     \nhttps://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html\x1b[0m\n")
-    
-        else:
-            raise error
-
-def text(prompt, system='', temperature=0.0, topP=1.0, tokens=512, model='sonnet'):
-    match model:
-        case 'sonnet':
-            return sonnet_text(prompt, system, temperature, topP, tokens)
-        case 'haiku':
-            return haiku_text(prompt, system, temperature, topP, tokens)
-        case 'claude2':
-            return claude2_text(prompt, system, temperature, topP, tokens)
-        case 'instant':
-            return instant_text(prompt, system, temperature, topP, tokens)
-        case 'llama2':
-            return llama2_text(prompt, system, temperature, topP, tokens)
-        case _:
-            return 'Please specify a valid model name'
-
-def chat(prompt, system='', temperature=0.0, topP=1, tokens=512, reset=False, cache=False,
-         image_url="", model="sonnet"):
-    match model:
-        case 'sonnet':
-            return sonnet_chat(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, reset=reset, cache=cache, image_url=image_url)
-        case 'haiku':
-            return haiku_chat(prompt, system=system, temperature=temperature, 
-                topP=topP, tokens=tokens, reset=reset, cache=cache, image_url=image_url)
-        case _:
-            return 'Please specify a valid model name'

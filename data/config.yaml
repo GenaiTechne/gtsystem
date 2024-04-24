@@ -20,5 +20,3 @@ quality: # tally weights to 1
   user's primary goal, avoiding irrelevant details."
   - criteria: "User Intent Understanding: Evaluate the ability to understand and adapt responses based\
   on different user intents, such as seeking advice, information, instruction, or entertainment."
-benchmark:
-  - model: opus # gpt4 or opus

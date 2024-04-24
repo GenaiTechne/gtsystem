@@ -122,6 +122,11 @@ class BaseChat:
                         return filename
         return None
 
+class OllamaChat(BaseChat):
+    def __init__(self):
+        self.messages = []
+        self.save_folder = "ollama_chats"
+
 class GptChat(BaseChat):
     def __init__(self):
         self.messages = []

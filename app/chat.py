@@ -3,10 +3,10 @@ import sys
 sys.path.append('../gtsystem')
 
 import streamlit as st
-from gtsystem import openai
+from gtsystem import openai, ollama, anthropic
 
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt3.5"
+if "model" not in st.session_state:
+    st.session_state["model"] = "OpenAI GPT 3.5 Turbo"
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -20,10 +20,15 @@ if "temperature" not in st.session_state:
 if "max_tokens" not in st.session_state:
     st.session_state["max_tokens"] = 100
 
-st.title(f"Chat with {st.session_state.openai_model.upper()}")
+st.title(f"Chat with {st.session_state.model.upper()}")
 
 with st.sidebar:
-    st.selectbox("Model", options=["gpt3.5", "gpt4"], key="openai_model")
+    st.selectbox("Model", 
+                 options=["OpenAI GPT 3.5 Turbo", "OpenAI GPT 4 Turbo",
+                          "Phi3 3.8B on Ollama", "Llama3 8B on Ollama", "Mistral 7B on Ollama",
+                          "Gemma 9B on Ollama", 
+                          "Opus on Anthropic", "Sonnet on Anthropic", "Haiku on Anthropic"], 
+                 key="model")
     st.text_area("System message", key="system_message")
     st.slider("Temperature", min_value=0.0, max_value=1.0, step=0.1, key="temperature")
     st.slider("Max tokens", min_value=1, max_value=2048, step=1, key="max_tokens")
@@ -39,9 +44,28 @@ if prompt := st.chat_input("What is up?"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        stream = openai.chat(prompt=prompt, 
-                             model=st.session_state.openai_model, 
-                             system=st.session_state.system_message,
-                             temperature=st.session_state.temperature)
-        response = st.write_stream(stream)
+        if "OpenAI" in st.session_state.model:
+            model_name = st.session_state.model.replace("OpenAI ", "").replace(" ", "-").lower()
+            stream = openai.chat(prompt=prompt, 
+                            model=model_name, 
+                            system=st.session_state.system_message,
+                            temperature=st.session_state.temperature,
+                            tokens=st.session_state.max_tokens)
+            response = st.write_stream(stream)
+        
+        if "Anthropic" in st.session_state.model:
+            model_name = st.session_state.model.replace(" on Anthropic", "").lower()
+            stream = anthropic.chat(prompt=prompt, 
+                            model=anthropic.MODELS[model_name], 
+                            system=st.session_state.system_message,
+                            temperature=st.session_state.temperature)
+            response = st.write_stream(stream)
+        
+        if "Ollama" in st.session_state.model:
+            model_name = st.session_state.model.replace(" on Ollama", "").split(" ")[0].lower()
+            stream = ollama.chat(prompt=prompt, 
+                            model=model_name, 
+                            system=st.session_state.system_message,
+                            temperature=st.session_state.temperature)
+            response = st.write_stream(stream)
     st.session_state.messages.append({"role": "assistant", "content": response})

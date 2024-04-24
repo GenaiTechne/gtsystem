@@ -61,6 +61,21 @@ You can learn `gtsystem` API by following along the [notebook samples](https://g
 
 ## What's New
 
+### 2024-04-21 (Release 0.3.1)
+
+- Streamlit chat playground app adds streaming chat models from Ollama, Anthropic, and OpenAI
+
+![Select multiple models](images/chat-playground-models.png)
+
+- PIVOT: Deprecated gtsystem.instrument and gtsystem.benchmark in favor of simplifying gtsystem API
+- PIVOT: Only retained support for unique or latest models
+- Added ollama.chat
+- Deprecated ollama.model_chat/model_text 
+- Simplified Bedrock to support only Claude3 Sonnet, Haiku models
+- Simplified Anthropic chat, text methods
+- Simplified Groq text method
+- All chat and text methods take model argument with official model name
+
 ### 2024-04-21 (Release 0.2.1)
 
 - Streamlit app with streaming chat playgroud for OpenAI models with configurable system message, temperature, tokens
